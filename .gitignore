@@ -5,6 +5,7 @@ cdk.out
 out-tsc
 **/*.js
 **/*.d.ts
+**/*.tgz
 
 # dependencies
 node_modules
@@ -30,6 +31,7 @@ node_modules
 .sass-cache
 connect.lock
 coverage
+tsconfig.tsbuildinfo
 *.log
 
 # System Files
