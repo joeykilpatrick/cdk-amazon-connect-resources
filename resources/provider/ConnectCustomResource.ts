@@ -34,7 +34,7 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
         }
 
         const lambda = new NodeJSLambda.NodejsFunction(stack, "ConnectCustomResourceLambda", {
-            entry: path.resolve(__dirname, './ConnectCustomResourceHandler.ts'),
+            entry: path.resolve(__dirname, './ConnectCustomResourceHandler.js'),
             handler: 'handler',
             runtime: Lambda.Runtime.NODEJS_18_X,
             timeout: CDK.Duration.minutes(5),
