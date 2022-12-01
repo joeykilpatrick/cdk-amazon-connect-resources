@@ -1,0 +1,25 @@
+{
+    "name": "cdk-amazon-connect-resources",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/joeykilpatrick/cdk-amazon-connect-resources.git"
+    },
+    "author": "Joey Kilpatrick",
+    "scripts": {
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/joeykilpatrick/cdk-amazon-connect-resources/issues"
+    },
+    "homepage": "https://github.com/joeykilpatrick/cdk-amazon-connect-resources#readme",
+    "dependencies": {
+        "@aws-sdk/client-connect": "^3.218.0",
+        "@types/aws-lambda": "^8.10.109",
+        "@types/node": "^18.11.9",
+        "aws-cdk": "^2.52.0",
+        "aws-cdk-lib": "^2.52.0",
+        "constructs": "^10.1.173",
+        "esbuild": "^0.15.16"
+    }
+}

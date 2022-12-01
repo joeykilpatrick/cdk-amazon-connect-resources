@@ -1,0 +1,17 @@
+.github/
+.idea/
+.vscode/
+
+**/*.ts
+!**/*.js
+!**/*.d.ts
+
+package-lock.json
+
+tsconfig.json
+tsconfig.tsbuildinfo
+
+build
+dist
+cdk.out
+cdk.context.json
