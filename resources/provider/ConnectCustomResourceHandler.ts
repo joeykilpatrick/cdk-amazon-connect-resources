@@ -3,11 +3,12 @@ import type {
     CloudFormationCustomResourceResponse
 } from "aws-lambda";
 
-import {ResourceType} from "./types";
+import {ResourceType} from ".";
 import {
     ConnectPhoneNumberContactFlowAssociation,
     ConnectLexBotAssociation,
     ConnectLambdaFunctionAssociation,
+    ConnectQueue,
 } from "..";
 
 export async function handler(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
@@ -29,6 +30,7 @@ export async function handler(event: CloudFormationCustomResourceEvent): Promise
         [ResourceType.LAMBDA_FUNCTION_ASSOCIATION]: ConnectLambdaFunctionAssociation.handleCloudFormationEvent,
         [ResourceType.LEX_BOT_ASSOCIATION]: ConnectLexBotAssociation.handleCloudFormationEvent,
         [ResourceType.PHONE_NUMBER_CONTACT_FLOW_ASSOCIATION]: ConnectPhoneNumberContactFlowAssociation.handleCloudFormationEvent,
+        [ResourceType.QUEUE]: ConnectQueue.handleCloudFormationEvent,
     };
 
     return await handlers[resourceType](event);

@@ -8,8 +8,7 @@ import {
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
-import {ConnectCustomResource} from "./provider";
-import {ResourceType} from "./provider/types";
+import {ConnectCustomResource, ResourceType} from "./provider";
 
 const connect = new ConnectClient({});
 

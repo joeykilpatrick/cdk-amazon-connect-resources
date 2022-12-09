@@ -3,3 +3,4 @@ export * from './ConnectLambdaFunction';
 export * from './ConnectLambdaFunctionAssociation';
 export * from './ConnectLexBotAssociation';
 export * from './ConnectPhoneNumberContactFlowAssociation';
+export * from './ConnectQueue';

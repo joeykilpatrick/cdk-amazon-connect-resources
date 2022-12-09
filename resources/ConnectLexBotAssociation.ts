@@ -9,8 +9,7 @@ import {
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
-import {ConnectCustomResource} from "./provider";
-import {ResourceType} from "./provider/types";
+import {ConnectCustomResource, ResourceType} from "./provider";
 
 const connect = new ConnectClient({});
 
@@ -34,7 +33,7 @@ export class ConnectLexBotAssociation extends ConnectCustomResource {
             case "Create":
             case "Update": {
 
-                const listCommand = new ListBotsCommand({
+                const listCommand = new ListBotsCommand({ // TODO Multiple pages
                     InstanceId: props.connectInstanceId,
                     LexVersion: LexVersion.V2,
                 });

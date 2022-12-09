@@ -8,8 +8,7 @@ import {
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
-import {ConnectCustomResource} from "./provider";
-import {ResourceType} from "./provider/types";
+import {ConnectCustomResource, ResourceType} from "./provider";
 
 const connect = new ConnectClient({});
 
@@ -33,7 +32,7 @@ export class ConnectLambdaFunctionAssociation extends ConnectCustomResource {
             case "Create":
             case "Update": {
 
-                const listCommand = new ListLambdaFunctionsCommand({
+                const listCommand = new ListLambdaFunctionsCommand({ // TODO Multiple pages
                     InstanceId: props.connectInstanceId,
                 });
                 const response = await connect.send(listCommand);
