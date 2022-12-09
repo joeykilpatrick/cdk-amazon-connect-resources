@@ -27,12 +27,12 @@ export class ConnectQueue extends ConnectCustomResource {
         this.applyRemovalPolicy(props.RemovalPolicy);
     }
 
-    get attrId(): CDK.Reference {
-        return this.getAtt('QueueId');
+    get attrId(): string {
+        return this.getAttString('QueueId');
     }
 
-    get attrArn(): CDK.Reference {
-        return this.getAtt('QueueArn');
+    get attrArn(): string {
+        return this.getAttString('QueueArn');
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {

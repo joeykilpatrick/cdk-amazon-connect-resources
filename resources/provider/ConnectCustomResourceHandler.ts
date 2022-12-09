@@ -5,6 +5,7 @@ import type {
 
 import {ResourceType} from ".";
 import {
+    ConnectExistingPrompt,
     ConnectPhoneNumberContactFlowAssociation,
     ConnectLexBotAssociation,
     ConnectLambdaFunctionAssociation,
@@ -27,6 +28,7 @@ export async function handler(event: CloudFormationCustomResourceEvent): Promise
     type Handler = (event: CloudFormationCustomResourceEvent) => Promise<CloudFormationCustomResourceResponse>;
 
     const handlers: Record<ResourceType, Handler> = {
+        [ResourceType.EXISTING_PROMPT]: ConnectExistingPrompt.handleCloudFormationEvent,
         [ResourceType.LAMBDA_FUNCTION_ASSOCIATION]: ConnectLambdaFunctionAssociation.handleCloudFormationEvent,
         [ResourceType.LEX_BOT_ASSOCIATION]: ConnectLexBotAssociation.handleCloudFormationEvent,
         [ResourceType.PHONE_NUMBER_CONTACT_FLOW_ASSOCIATION]: ConnectPhoneNumberContactFlowAssociation.handleCloudFormationEvent,
