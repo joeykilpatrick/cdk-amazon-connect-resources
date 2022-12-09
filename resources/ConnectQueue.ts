@@ -1,10 +1,11 @@
 import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResponse} from "aws-lambda";
 import * as crypto from "crypto";
+import * as CDK from "aws-cdk-lib";
 import {
-    ListQueuesCommand,
+    ConnectClient,
     CreateQueueCommand,
     CreateQueueRequest,
-    ConnectClient,
+    ListQueuesCommand,
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
@@ -15,12 +16,23 @@ const connect = new ConnectClient({});
 interface ConnectQueueProps extends CreateQueueRequest {
     InstanceId: string,
     Name: string,
+    HoursOfOperationId: string,
+    RemovalPolicy: CDK.RemovalPolicy.RETAIN, // Queues cannot be deleted.
 }
 
 export class ConnectQueue extends ConnectCustomResource {
 
     public constructor(scope: Construct, id: string, props: ConnectQueueProps) {
         super(scope, id, props, ResourceType.QUEUE);
+        this.applyRemovalPolicy(props.RemovalPolicy);
+    }
+
+    get attrId(): CDK.Reference {
+        return this.getAtt('QueueId');
+    }
+
+    get attrArn(): CDK.Reference {
+        return this.getAtt('QueueArn');
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
@@ -34,9 +46,9 @@ export class ConnectQueue extends ConnectCustomResource {
                 const listCommand = new ListQueuesCommand({ // TODO Multiple pages
                     InstanceId: props.InstanceId,
                 });
-                const response = await connect.send(listCommand);
+                const listCommandResponse = await connect.send(listCommand);
 
-                const existsAlready = response.QueueSummaryList!.some(
+                const existsAlready = listCommandResponse.QueueSummaryList!.some(
                     (name) => name === props.Name,
                 );
 
@@ -45,7 +57,7 @@ export class ConnectQueue extends ConnectCustomResource {
                 }
 
                 const createCommand = new CreateQueueCommand(props);
-                await connect.send(createCommand);
+                const createCommandResponse = await connect.send(createCommand);
 
                 const propsHash = crypto.createHash('md5').update(JSON.stringify({
                     connectInstanceId: props.InstanceId,
@@ -56,13 +68,18 @@ export class ConnectQueue extends ConnectCustomResource {
                     ...event,
                     Status: "SUCCESS",
                     PhysicalResourceId: propsHash,
+                    Data: {
+                        QueueId: createCommandResponse.QueueId,
+                        QueueArn: createCommandResponse.QueueArn,
+                    },
                 };
+
             }
 
             case "Update": {
 
                 // TODO
-                throw Error('Update action has not been implemented on ConnectQueue. Please change name and create a new queue.');
+                throw Error('Update action has not been implemented on ConnectQueue. Please change name to create a new queue.');
 
             }
 

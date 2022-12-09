@@ -1,6 +1,6 @@
 {
     "name": "cdk-amazon-connect-resources",
-    "version": "0.0.1-alpha",
+    "version": "0.0.2-alpha",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/joeykilpatrick/cdk-amazon-connect-resources.git"
