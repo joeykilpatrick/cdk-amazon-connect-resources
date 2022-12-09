@@ -5,3 +5,5 @@ export * from './ConnectLambdaFunctionAssociation';
 export * from './ConnectLexBotAssociation';
 export * from './ConnectPhoneNumberContactFlowAssociation';
 export * from './ConnectQueue';
+export * from './ConnectRoutingProfile';
+export * from './ConnectSecurityProfile';

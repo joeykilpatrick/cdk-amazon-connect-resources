@@ -45,10 +45,15 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "connect:Associate*",
                 "connect:Disassociate*",
                 "connect:List*",
-                "connect:CreateQueue",
+                "connect:*Queue*",
+                "connect:*SecurityProfile*",
+                "connect:*RoutingProfile*",
+
                 "iam:*RolePolicy",
                 "iam:CreateServiceLinkedRole",
+
                 "lambda:*Permission",
+
                 "lex:*ResourcePolicy",
                 "lex:DescribeBotAlias",
                 "lex:GetBot",
