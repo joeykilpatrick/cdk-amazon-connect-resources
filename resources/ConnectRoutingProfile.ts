@@ -14,7 +14,7 @@ const connect = new ConnectClient({});
 
 interface ConnectRoutingProfileProps extends CreateRoutingProfileRequest {
     InstanceId: string,
-    RoutingProfileName: string,
+    Name: string,
 }
 
 export class ConnectRoutingProfile extends ConnectCustomResource {
@@ -45,11 +45,11 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
                 const listCommandResponse = await connect.send(listCommand);
 
                 const existsAlready = listCommandResponse.RoutingProfileSummaryList!.some(
-                    (name) => name === props.RoutingProfileName,
+                    (name) => name === props.Name,
                 );
 
                 if (existsAlready) {
-                    throw Error(`Routing Profile "${props.RoutingProfileName}" already exists on Connect instance ${props.InstanceId}.`);
+                    throw Error(`Routing Profile "${props.Name}" already exists on Connect instance ${props.InstanceId}.`);
                 }
 
                 const createCommand = new CreateRoutingProfileCommand(props);
@@ -57,7 +57,7 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
 
                 const propsHash = crypto.createHash('md5').update(JSON.stringify({
                     InstanceId: props.InstanceId,
-                    RoutingProfileName: props.RoutingProfileName,
+                    RoutingProfileName: props.Name,
                 })).digest('hex').slice(0, 12);
 
                 return {
