@@ -32,7 +32,7 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
-        const props = event.ResourceProperties as ConnectRoutingProfileProps & { ServiceToken: string };
+        const props = JSON.parse(event.ResourceProperties.PropString) as ConnectRoutingProfileProps;
         console.log({props});
 
         switch (event.RequestType) {

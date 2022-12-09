@@ -20,7 +20,7 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
     ) {
         super(scope, id, {
             serviceToken: ConnectCustomResource.getProvider(CDK.Stack.of(scope)).serviceToken,
-            properties: props,
+            properties: { PropString: JSON.stringify(props) },
             resourceType: `Custom::${type}`,
         });
     }

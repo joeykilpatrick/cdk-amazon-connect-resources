@@ -24,7 +24,7 @@ export class ConnectLambdaFunctionAssociation extends ConnectCustomResource {
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
-        const props = event.ResourceProperties as LambdaFunctionAssociationProps & { ServiceToken: string };
+        const props = JSON.parse(event.ResourceProperties.PropString) as LambdaFunctionAssociationProps;
         console.log({props});
 
         switch (event.RequestType) {

@@ -33,7 +33,7 @@ export class ConnectExistingPrompt extends ConnectCustomResource {
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
-        const props = event.ResourceProperties as ExistingPromptProps & { ServiceToken: string };
+        const props = JSON.parse(event.ResourceProperties.PropString) as ExistingPromptProps;
         console.log({props});
 
         switch (event.RequestType) {

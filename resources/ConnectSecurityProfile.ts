@@ -33,7 +33,7 @@ export class ConnectSecurityProfile extends ConnectCustomResource {
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
-        const props = event.ResourceProperties as ConnectSecurityProfileProps & { ServiceToken: string };
+        const props = JSON.parse(event.ResourceProperties.PropString) as ConnectSecurityProfileProps;
         console.log({props});
 
         switch (event.RequestType) {

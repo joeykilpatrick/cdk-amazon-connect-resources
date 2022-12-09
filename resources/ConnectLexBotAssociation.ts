@@ -25,7 +25,7 @@ export class ConnectLexBotAssociation extends ConnectCustomResource {
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
-        const props = event.ResourceProperties as LexBotAssociationProps & { ServiceToken: string };
+        const props = JSON.parse(event.ResourceProperties.PropString) as LexBotAssociationProps;
         console.log({props});
 
         switch (event.RequestType) {

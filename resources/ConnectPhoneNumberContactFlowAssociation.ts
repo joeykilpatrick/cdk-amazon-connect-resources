@@ -25,7 +25,7 @@ export class ConnectPhoneNumberContactFlowAssociation extends ConnectCustomResou
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
-        const props = event.ResourceProperties as PhoneNumberContactFlowAssociationProps & { ServiceToken: string };
+        const props = JSON.parse(event.ResourceProperties.PropString) as PhoneNumberContactFlowAssociationProps;
         console.log({props});
 
         switch (event.RequestType) {

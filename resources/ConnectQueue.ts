@@ -36,7 +36,7 @@ export class ConnectQueue extends ConnectCustomResource {
     }
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
-        const props = event.ResourceProperties as ConnectQueueProps & { ServiceToken: string };
+        const props = JSON.parse(event.ResourceProperties.PropString) as ConnectQueueProps;
         console.log({props});
 
         switch (event.RequestType) {
