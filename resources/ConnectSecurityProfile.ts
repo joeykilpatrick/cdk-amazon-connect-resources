@@ -100,6 +100,10 @@ export class ConnectSecurityProfile extends ConnectCustomResource {
                 return {
                     ...event,
                     Status: "SUCCESS",
+                    Data: {
+                        SecurityProfileId: currentProfile.Id,
+                        SecurityProfileArn: currentProfile.Arn,
+                    },
                 };
 
             }

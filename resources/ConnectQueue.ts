@@ -146,6 +146,10 @@ export class ConnectQueue extends ConnectCustomResource {
                 return {
                     ...event,
                     Status: "SUCCESS",
+                    Data: {
+                        QueueId: currentQueue.Id,
+                        QueueArn: currentQueue.Arn,
+                    },
                 };
 
             }

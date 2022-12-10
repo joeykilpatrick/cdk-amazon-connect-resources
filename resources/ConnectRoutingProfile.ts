@@ -123,6 +123,10 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
                 return {
                     ...event,
                     Status: "SUCCESS",
+                    Data: {
+                        RoutingProfileId: currentProfile.Id,
+                        RoutingProfileArn: currentProfile.Arn,
+                    },
                 };
 
             }
