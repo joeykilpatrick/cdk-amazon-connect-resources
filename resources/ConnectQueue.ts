@@ -1,11 +1,18 @@
 import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResponse} from "aws-lambda";
-import * as crypto from "crypto";
+import * as _ from "lodash";
 import * as CDK from "aws-cdk-lib";
 import {
+    AssociateQueueQuickConnectsCommand,
     ConnectClient,
     CreateQueueCommand,
     CreateQueueRequest,
+    DisassociateQueueQuickConnectsCommand,
     ListQueuesCommand,
+    QueueSummary,
+    UpdateQueueHoursOfOperationCommand,
+    UpdateQueueMaxContactsCommand,
+    UpdateQueueNameCommand,
+    UpdateQueueOutboundCallerConfigCommand,
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
@@ -43,31 +50,19 @@ export class ConnectQueue extends ConnectCustomResource {
 
             case "Create": {
 
-                const listCommand = new ListQueuesCommand({ // TODO Multiple pages
-                    InstanceId: props.InstanceId,
-                });
-                const listCommandResponse = await connect.send(listCommand);
+                const existingQueue = await this.getQueue(props.InstanceId, props.Name);
 
-                const existsAlready = listCommandResponse.QueueSummaryList!.some(
-                    (name) => name === props.Name,
-                );
-
-                if (existsAlready) {
+                if (existingQueue) {
                     throw Error(`Queue "${props.Name}" already exists on Connect instance ${props.InstanceId}.`);
                 }
 
                 const createCommand = new CreateQueueCommand(props);
                 const createCommandResponse = await connect.send(createCommand);
 
-                const propsHash = crypto.createHash('md5').update(JSON.stringify({
-                    connectInstanceId: props.InstanceId,
-                    queueName: props.Name,
-                })).digest('hex').slice(0, 12);
-
                 return {
                     ...event,
                     Status: "SUCCESS",
-                    PhysicalResourceId: propsHash,
+                    PhysicalResourceId: Date.now().toString(),
                     Data: {
                         QueueId: createCommandResponse.QueueId,
                         QueueArn: createCommandResponse.QueueArn,
@@ -78,8 +73,80 @@ export class ConnectQueue extends ConnectCustomResource {
 
             case "Update": {
 
-                // TODO
-                throw Error('Update action has not been implemented on ConnectQueue. Please change name to create a new queue.');
+                const newProps = props;
+                const oldProps = JSON.parse(event.OldResourceProperties.PropString) as ConnectQueueProps;
+
+                if (newProps.InstanceId !== oldProps.InstanceId) {
+                    return await this.handleCloudFormationEvent({...event, RequestType: 'Create'});
+                }
+
+                const currentQueue = await this.getQueue(oldProps.InstanceId, oldProps.Name);
+
+                if (!currentQueue) {
+                    throw Error(`Did not find Queue "${oldProps.Name}" on Connect instance ${oldProps.InstanceId} to update.`);
+                }
+
+                if (newProps.HoursOfOperationId !== oldProps.HoursOfOperationId) {
+                    const updateCommand = new UpdateQueueHoursOfOperationCommand({
+                        InstanceId: newProps.InstanceId,
+                        QueueId: currentQueue.Id,
+                        HoursOfOperationId: newProps.HoursOfOperationId,
+                    });
+                    await connect.send(updateCommand);
+                }
+
+                if (newProps.MaxContacts !== oldProps.MaxContacts) {
+                    const updateCommand = new UpdateQueueMaxContactsCommand({
+                        InstanceId: newProps.InstanceId,
+                        QueueId: currentQueue.Id,
+                        MaxContacts: newProps.MaxContacts,
+                    });
+                    await connect.send(updateCommand);
+                }
+
+                if (newProps.Name !== oldProps.Name) {
+                    const updateCommand = new UpdateQueueNameCommand({
+                        InstanceId: newProps.InstanceId,
+                        QueueId: currentQueue.Id,
+                        Name: newProps.Name,
+                    });
+                    await connect.send(updateCommand);
+                }
+
+                if (!_.isEqual(newProps.OutboundCallerConfig, oldProps.OutboundCallerConfig)) {
+                    const updateCommand = new UpdateQueueOutboundCallerConfigCommand({
+                        InstanceId: newProps.InstanceId,
+                        QueueId: currentQueue.Id,
+                        OutboundCallerConfig: newProps.OutboundCallerConfig,
+                    });
+                    await connect.send(updateCommand);
+                }
+
+                if (!_.isEqual(newProps.QuickConnectIds, oldProps.QuickConnectIds)) {
+
+                    const quickConnectsToRemove: string[] = _.difference(oldProps.QuickConnectIds || [], newProps.QuickConnectIds || []);
+                    const quickConnectsToAdd: string[] = _.difference(newProps.QuickConnectIds || [], oldProps.QuickConnectIds || []);
+
+                    const disassociateCommand = new DisassociateQueueQuickConnectsCommand({
+                        InstanceId: newProps.InstanceId,
+                        QueueId: currentQueue.Id,
+                        QuickConnectIds: quickConnectsToRemove,
+                    });
+                    await connect.send(disassociateCommand);
+
+                    const associateCommand = new AssociateQueueQuickConnectsCommand({
+                        InstanceId: newProps.InstanceId,
+                        QueueId: currentQueue.Id,
+                        QuickConnectIds: quickConnectsToAdd,
+                    });
+                    await connect.send(associateCommand);
+
+                }
+
+                return {
+                    ...event,
+                    Status: "SUCCESS",
+                };
 
             }
 
@@ -90,6 +157,20 @@ export class ConnectQueue extends ConnectCustomResource {
             }
 
         }
+
+    }
+
+    static async getQueue(instanceId: string, queueName: string): Promise<QueueSummary | undefined> {
+
+        const listCommand = new ListQueuesCommand({ // TODO Multiple pages
+            InstanceId: instanceId,
+        });
+        const listCommandResponse = await connect.send(listCommand);
+
+        return listCommandResponse.QueueSummaryList!.find(
+            (summary) => summary.Name === queueName,
+        );
+
     }
 
 }

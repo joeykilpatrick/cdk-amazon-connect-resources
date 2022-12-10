@@ -1,6 +1,6 @@
 {
     "name": "cdk-amazon-connect-resources",
-    "version": "0.0.6-alpha",
+    "version": "0.0.7-alpha",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/joeykilpatrick/cdk-amazon-connect-resources.git"
@@ -17,10 +17,12 @@
     "dependencies": {
         "@aws-sdk/client-connect": "^3.218.0",
         "@types/aws-lambda": "^8.10.109",
+        "@types/lodash": "^4.14.191",
         "@types/node": "^18.11.9",
         "aws-cdk": "^2.52.0",
         "aws-cdk-lib": "^2.52.0",
         "constructs": "^10.1.173",
-        "esbuild": "^0.15.16"
+        "esbuild": "^0.15.16",
+        "lodash": "^4.17.21"
     }
 }

@@ -1,10 +1,16 @@
 import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResponse} from "aws-lambda";
-import * as crypto from "crypto";
+import * as _ from 'lodash';
+import * as CDK from "aws-cdk-lib";
 import {
     ConnectClient,
     CreateRoutingProfileCommand,
     CreateRoutingProfileRequest,
     ListRoutingProfilesCommand,
+    RoutingProfileSummary,
+    UpdateRoutingProfileConcurrencyCommand,
+    UpdateRoutingProfileDefaultOutboundQueueCommand,
+    UpdateRoutingProfileNameCommand,
+    UpdateRoutingProfileQueuesCommand,
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
@@ -15,12 +21,14 @@ const connect = new ConnectClient({});
 interface ConnectRoutingProfileProps extends CreateRoutingProfileRequest {
     InstanceId: string,
     Name: string,
+    RemovalPolicy: CDK.RemovalPolicy.RETAIN, // Routing Profiles cannot be deleted.
 }
 
 export class ConnectRoutingProfile extends ConnectCustomResource {
 
     public constructor(scope: Construct, id: string, props: ConnectRoutingProfileProps) {
         super(scope, id, props, ResourceType.ROUTING_PROFILE);
+        this.applyRemovalPolicy(props.RemovalPolicy);
     }
 
     get attrId(): string {
@@ -33,37 +41,26 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
 
     static async handleCloudFormationEvent(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
         const props = JSON.parse(event.ResourceProperties.PropString) as ConnectRoutingProfileProps;
+
         console.log({props});
 
         switch (event.RequestType) {
 
             case "Create": {
 
-                const listCommand = new ListRoutingProfilesCommand({ // TODO Multiple pages
-                    InstanceId: props.InstanceId,
-                });
-                const listCommandResponse = await connect.send(listCommand);
+                const existingProfile = await this.getRoutingProfile(props.InstanceId, props.Name);
 
-                const existsAlready = listCommandResponse.RoutingProfileSummaryList!.some(
-                    (name) => name === props.Name,
-                );
-
-                if (existsAlready) {
+                if (existingProfile) {
                     throw Error(`Routing Profile "${props.Name}" already exists on Connect instance ${props.InstanceId}.`);
                 }
 
                 const createCommand = new CreateRoutingProfileCommand(props);
                 const createCommandResponse = await connect.send(createCommand);
 
-                const propsHash = crypto.createHash('md5').update(JSON.stringify({
-                    InstanceId: props.InstanceId,
-                    RoutingProfileName: props.Name,
-                })).digest('hex').slice(0, 12);
-
                 return {
                     ...event,
                     Status: "SUCCESS",
-                    PhysicalResourceId: propsHash,
+                    PhysicalResourceId: Date.now().toString(),
                     Data: {
                         RoutingProfileId: createCommandResponse.RoutingProfileId,
                         RoutingProfileArn: createCommandResponse.RoutingProfileArn,
@@ -74,8 +71,59 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
 
             case "Update": {
 
-                // TODO
-                throw Error('Update action has not been implemented on ConnectRoutingProfile. Please change name to delete this one and create a new one.');
+                const newProps = props;
+                const oldProps = JSON.parse(event.OldResourceProperties.PropString) as ConnectRoutingProfileProps;
+
+                if (newProps.InstanceId !== oldProps.InstanceId) {
+                    return await this.handleCloudFormationEvent({...event, RequestType: 'Create'});
+                }
+
+                const currentProfile = await this.getRoutingProfile(oldProps.InstanceId, oldProps.Name);
+
+                if (!currentProfile) {
+                    throw Error(`Did not find Routing Profile "${oldProps.Name}" on Connect instance ${oldProps.InstanceId} to update.`);
+                }
+
+                if (newProps.DefaultOutboundQueueId !== oldProps.DefaultOutboundQueueId) {
+                    const updateCommand = new UpdateRoutingProfileDefaultOutboundQueueCommand({
+                        InstanceId: newProps.InstanceId,
+                        RoutingProfileId: currentProfile.Id,
+                        DefaultOutboundQueueId: newProps.DefaultOutboundQueueId,
+                    });
+                    await connect.send(updateCommand);
+                }
+
+                if (!_.isEqual(newProps.MediaConcurrencies, oldProps.MediaConcurrencies)) {
+                    const updateCommand = new UpdateRoutingProfileConcurrencyCommand({
+                        InstanceId: newProps.InstanceId,
+                        RoutingProfileId: currentProfile.Id,
+                        MediaConcurrencies: newProps.MediaConcurrencies,
+                    });
+                    await connect.send(updateCommand);
+                }
+
+                if (newProps.Name !== oldProps.Name) {
+                    const updateCommand = new UpdateRoutingProfileNameCommand({
+                        InstanceId: newProps.InstanceId,
+                        RoutingProfileId: currentProfile.Id,
+                        Name: newProps.Name,
+                    });
+                    await connect.send(updateCommand);
+                }
+
+                if (!_.isEqual(newProps.QueueConfigs, oldProps.QueueConfigs)) {
+                    const updateCommand = new UpdateRoutingProfileQueuesCommand({
+                        InstanceId: newProps.InstanceId,
+                        RoutingProfileId: currentProfile.Id,
+                        QueueConfigs: newProps.QueueConfigs,
+                    });
+                    await connect.send(updateCommand);
+                }
+
+                return {
+                    ...event,
+                    Status: "SUCCESS",
+                };
 
             }
 
@@ -86,6 +134,19 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
             }
 
         }
+    }
+
+    static async getRoutingProfile(instanceId: string, profileName: string): Promise<RoutingProfileSummary | undefined> {
+
+        const listCommand = new ListRoutingProfilesCommand({ // TODO Multiple pages
+            InstanceId: instanceId,
+        });
+        const listCommandResponse = await connect.send(listCommand);
+
+        return listCommandResponse.RoutingProfileSummaryList!.find(
+            (summary) => summary.Name === profileName,
+        );
+
     }
 
 }

@@ -6,6 +6,8 @@ import {
     CreateSecurityProfileRequest,
     DeleteSecurityProfileCommand,
     ListSecurityProfilesCommand,
+    SecurityProfileSummary,
+    UpdateSecurityProfileCommand,
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
@@ -40,31 +42,19 @@ export class ConnectSecurityProfile extends ConnectCustomResource {
 
             case "Create": {
 
-                const listCommand = new ListSecurityProfilesCommand({ // TODO Multiple pages
-                    InstanceId: props.InstanceId,
-                });
-                const listCommandResponse = await connect.send(listCommand);
+                const existingProfile = await this.getSecurityProfile(props.InstanceId, props.SecurityProfileName);
 
-                const existsAlready = listCommandResponse.SecurityProfileSummaryList!.some(
-                    (name) => name === props.SecurityProfileName,
-                );
-
-                if (existsAlready) {
+                if (existingProfile) {
                     throw Error(`Security Profile "${props.SecurityProfileName}" already exists on Connect instance ${props.InstanceId}.`);
                 }
 
                 const createCommand = new CreateSecurityProfileCommand(props);
                 const createCommandResponse = await connect.send(createCommand);
 
-                const propsHash = crypto.createHash('md5').update(JSON.stringify({
-                    InstanceId: props.InstanceId,
-                    SecurityProfileName: props.SecurityProfileName,
-                })).digest('hex').slice(0, 12);
-
                 return {
                     ...event,
                     Status: "SUCCESS",
-                    PhysicalResourceId: propsHash,
+                    PhysicalResourceId: this.getHash(props),
                     Data: {
                         SecurityProfileId: createCommandResponse.SecurityProfileId,
                         SecurityProfileArn: createCommandResponse.SecurityProfileArn,
@@ -75,21 +65,43 @@ export class ConnectSecurityProfile extends ConnectCustomResource {
 
             case "Update": {
 
-                // TODO
-                throw Error('Update action has not been implemented on ConnectSecurityProfile. Please change name to delete this one and create a new one.');
+                const newProps = props;
+                const oldProps = JSON.parse(event.OldResourceProperties.PropString) as ConnectSecurityProfileProps;
+
+                if (
+                    newProps.SecurityProfileName !== oldProps.SecurityProfileName
+                    || newProps.InstanceId !== oldProps.InstanceId
+                ) {
+                    return await this.handleCloudFormationEvent({...event, RequestType: 'Create'});
+                }
+
+                const currentProfile = await this.getSecurityProfile(newProps.InstanceId, newProps.SecurityProfileName);
+
+                if (!currentProfile) {
+                    throw Error(`Did not find Security Profile "${props.SecurityProfileName}" on Connect instance ${props.InstanceId} to update.`);
+                }
+
+                const updateCommand = new UpdateSecurityProfileCommand({
+                    InstanceId: props.InstanceId,
+                    SecurityProfileId: currentProfile.Id,
+
+                    AllowedAccessControlTags: props.AllowedAccessControlTags,
+                    Description: props.Description,
+                    Permissions: props.Permissions,
+                    TagRestrictedResources: props.TagRestrictedResources,
+                });
+                await connect.send(updateCommand);
+
+                return {
+                    ...event,
+                    Status: "SUCCESS",
+                };
 
             }
 
             case "Delete": {
 
-                const listCommand = new ListSecurityProfilesCommand({ // TODO Multiple pages
-                    InstanceId: props.InstanceId,
-                });
-                const listCommandResponse = await connect.send(listCommand);
-
-                const securityProfile = listCommandResponse.SecurityProfileSummaryList!.find(
-                    (name) => name === props.SecurityProfileName,
-                );
+                const securityProfile = await this.getSecurityProfile(props.InstanceId, props.SecurityProfileName);
 
                 if (!securityProfile) {
                     return {
@@ -111,6 +123,28 @@ export class ConnectSecurityProfile extends ConnectCustomResource {
             }
 
         }
+    }
+
+    static async getSecurityProfile(instanceId: string, profileName: string): Promise<SecurityProfileSummary | undefined> {
+
+        const listCommand = new ListSecurityProfilesCommand({ // TODO Multiple pages
+            InstanceId: instanceId,
+        });
+        const listCommandResponse = await connect.send(listCommand);
+
+        return listCommandResponse.SecurityProfileSummaryList!.find(
+            (summary) => summary.Name === profileName,
+        );
+
+    }
+
+    static getHash(props: ConnectSecurityProfileProps): string {
+
+        return crypto.createHash('md5').update(JSON.stringify({
+            InstanceId: props.InstanceId,
+            SecurityProfileName: props.SecurityProfileName,
+        })).digest('hex').slice(0, 12);
+
     }
 
 }
