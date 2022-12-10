@@ -48,7 +48,7 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
 
             case "Create": {
 
-                const existingProfile = await this.getRoutingProfile(props.InstanceId, props.Name);
+                const existingProfile = await ConnectRoutingProfile.getRoutingProfile(props.InstanceId, props.Name);
 
                 if (existingProfile) {
                     throw Error(`Routing Profile "${props.Name}" already exists on Connect instance ${props.InstanceId}.`);
@@ -75,10 +75,10 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
                 const oldProps = JSON.parse(event.OldResourceProperties.PropString) as ConnectRoutingProfileProps;
 
                 if (newProps.InstanceId !== oldProps.InstanceId) {
-                    return await this.handleCloudFormationEvent({...event, RequestType: 'Create'});
+                    return await ConnectRoutingProfile.handleCloudFormationEvent({...event, RequestType: 'Create'});
                 }
 
-                const currentProfile = await this.getRoutingProfile(oldProps.InstanceId, oldProps.Name);
+                const currentProfile = await ConnectRoutingProfile.getRoutingProfile(oldProps.InstanceId, oldProps.Name);
 
                 if (!currentProfile) {
                     throw Error(`Did not find Routing Profile "${oldProps.Name}" on Connect instance ${oldProps.InstanceId} to update.`);

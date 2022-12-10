@@ -50,7 +50,7 @@ export class ConnectQueue extends ConnectCustomResource {
 
             case "Create": {
 
-                const existingQueue = await this.getQueue(props.InstanceId, props.Name);
+                const existingQueue = await ConnectQueue.getQueue(props.InstanceId, props.Name);
 
                 if (existingQueue) {
                     throw Error(`Queue "${props.Name}" already exists on Connect instance ${props.InstanceId}.`);
@@ -77,10 +77,10 @@ export class ConnectQueue extends ConnectCustomResource {
                 const oldProps = JSON.parse(event.OldResourceProperties.PropString) as ConnectQueueProps;
 
                 if (newProps.InstanceId !== oldProps.InstanceId) {
-                    return await this.handleCloudFormationEvent({...event, RequestType: 'Create'});
+                    return await ConnectQueue.handleCloudFormationEvent({...event, RequestType: 'Create'});
                 }
 
-                const currentQueue = await this.getQueue(oldProps.InstanceId, oldProps.Name);
+                const currentQueue = await ConnectQueue.getQueue(oldProps.InstanceId, oldProps.Name);
 
                 if (!currentQueue) {
                     throw Error(`Did not find Queue "${oldProps.Name}" on Connect instance ${oldProps.InstanceId} to update.`);
