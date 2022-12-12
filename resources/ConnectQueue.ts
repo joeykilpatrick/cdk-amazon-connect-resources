@@ -1,5 +1,4 @@
 import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResponse} from "aws-lambda";
-import * as _ from "lodash";
 import * as CDK from "aws-cdk-lib";
 import {
     AssociateQueueQuickConnectsCommand,
@@ -14,6 +13,8 @@ import {
     UpdateQueueNameCommand,
     UpdateQueueOutboundCallerConfigCommand,
 } from "@aws-sdk/client-connect";
+import isEqual from "lodash/isEqual";
+import difference from "lodash/difference";
 import {Construct} from 'constructs';
 
 import {ConnectCustomResource, ResourceType} from "./provider";
@@ -113,7 +114,7 @@ export class ConnectQueue extends ConnectCustomResource {
                     await connect.send(updateCommand);
                 }
 
-                if (!_.isEqual(newProps.OutboundCallerConfig, oldProps.OutboundCallerConfig)) {
+                if (!isEqual(newProps.OutboundCallerConfig, oldProps.OutboundCallerConfig)) {
                     const updateCommand = new UpdateQueueOutboundCallerConfigCommand({
                         InstanceId: newProps.InstanceId,
                         QueueId: currentQueue.Id,
@@ -122,10 +123,10 @@ export class ConnectQueue extends ConnectCustomResource {
                     await connect.send(updateCommand);
                 }
 
-                if (!_.isEqual(newProps.QuickConnectIds, oldProps.QuickConnectIds)) {
+                if (!isEqual(newProps.QuickConnectIds, oldProps.QuickConnectIds)) {
 
-                    const quickConnectsToRemove: string[] = _.difference(oldProps.QuickConnectIds || [], newProps.QuickConnectIds || []);
-                    const quickConnectsToAdd: string[] = _.difference(newProps.QuickConnectIds || [], oldProps.QuickConnectIds || []);
+                    const quickConnectsToRemove: string[] = difference(oldProps.QuickConnectIds || [], newProps.QuickConnectIds || []);
+                    const quickConnectsToAdd: string[] = difference(newProps.QuickConnectIds || [], oldProps.QuickConnectIds || []);
 
                     const disassociateCommand = new DisassociateQueueQuickConnectsCommand({
                         InstanceId: newProps.InstanceId,

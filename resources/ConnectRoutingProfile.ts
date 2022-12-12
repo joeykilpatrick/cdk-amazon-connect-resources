@@ -1,5 +1,4 @@
 import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResponse} from "aws-lambda";
-import * as _ from 'lodash';
 import * as CDK from "aws-cdk-lib";
 import {
     ConnectClient,
@@ -12,6 +11,7 @@ import {
     UpdateRoutingProfileNameCommand,
     UpdateRoutingProfileQueuesCommand,
 } from "@aws-sdk/client-connect";
+import isEqual from "lodash/isEqual";
 import {Construct} from 'constructs';
 
 import {ConnectCustomResource, ResourceType} from "./provider";
@@ -93,7 +93,7 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
                     await connect.send(updateCommand);
                 }
 
-                if (!_.isEqual(newProps.MediaConcurrencies, oldProps.MediaConcurrencies)) {
+                if (!isEqual(newProps.MediaConcurrencies, oldProps.MediaConcurrencies)) {
                     const updateCommand = new UpdateRoutingProfileConcurrencyCommand({
                         InstanceId: newProps.InstanceId,
                         RoutingProfileId: currentProfile.Id,
@@ -111,7 +111,7 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
                     await connect.send(updateCommand);
                 }
 
-                if (!_.isEqual(newProps.QueueConfigs, oldProps.QueueConfigs)) {
+                if (!isEqual(newProps.QueueConfigs, oldProps.QueueConfigs)) {
                     const updateCommand = new UpdateRoutingProfileQueuesCommand({
                         InstanceId: newProps.InstanceId,
                         RoutingProfileId: currentProfile.Id,
