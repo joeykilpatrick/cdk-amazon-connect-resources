@@ -5,7 +5,8 @@ import {
     CreateSecurityProfileCommand,
     CreateSecurityProfileRequest,
     DeleteSecurityProfileCommand,
-    ListSecurityProfilesCommand,
+    paginateListSecurityProfiles,
+    RoutingProfileSummary,
     SecurityProfileSummary,
     UpdateSecurityProfileCommand,
 } from "@aws-sdk/client-connect";
@@ -136,12 +137,12 @@ export class ConnectSecurityProfile extends ConnectCustomResource {
 
     static async getSecurityProfile(instanceId: string, profileName: string): Promise<SecurityProfileSummary | undefined> {
 
-        const listCommand = new ListSecurityProfilesCommand({ // TODO Multiple pages
-            InstanceId: instanceId,
-        });
-        const listCommandResponse = await connect.send(listCommand);
+        const securityProfiles: RoutingProfileSummary[] = [];
+        for await (const page of paginateListSecurityProfiles({client: connect}, {InstanceId: instanceId})) {
+            securityProfiles.push(...page.SecurityProfileSummaryList!);
+        }
 
-        return listCommandResponse.SecurityProfileSummaryList!.find(
+        return securityProfiles.find(
             (summary) => summary.Name === profileName,
         );
 

@@ -7,7 +7,7 @@ import {
     CreateQueueCommand,
     CreateQueueRequest,
     DisassociateQueueQuickConnectsCommand,
-    ListQueuesCommand,
+    paginateListQueues,
     QueueSummary,
     UpdateQueueHoursOfOperationCommand,
     UpdateQueueMaxContactsCommand,
@@ -166,12 +166,12 @@ export class ConnectQueue extends ConnectCustomResource {
 
     static async getQueue(instanceId: string, queueName: string): Promise<QueueSummary | undefined> {
 
-        const listCommand = new ListQueuesCommand({ // TODO Multiple pages
-            InstanceId: instanceId,
-        });
-        const listCommandResponse = await connect.send(listCommand);
+        const queues: QueueSummary[] = [];
+        for await (const page of paginateListQueues({client: connect}, {InstanceId: instanceId})) {
+            queues.push(...page.QueueSummaryList!);
+        }
 
-        return listCommandResponse.QueueSummaryList!.find(
+        return queues.find(
             (summary) => summary.Name === queueName,
         );
 

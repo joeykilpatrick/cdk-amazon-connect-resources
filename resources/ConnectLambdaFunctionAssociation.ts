@@ -1,10 +1,10 @@
 import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResponse} from "aws-lambda";
 import * as crypto from "crypto";
 import {
-    ListLambdaFunctionsCommand,
     AssociateLambdaFunctionCommand,
-    DisassociateLambdaFunctionCommand,
     ConnectClient,
+    DisassociateLambdaFunctionCommand,
+    paginateListLambdaFunctions
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
@@ -32,12 +32,14 @@ export class ConnectLambdaFunctionAssociation extends ConnectCustomResource {
             case "Create":
             case "Update": {
 
-                const listCommand = new ListLambdaFunctionsCommand({ // TODO Multiple pages
+                const lambdas: string[] = [];
+                for await (const page of paginateListLambdaFunctions({client: connect}, {
                     InstanceId: props.connectInstanceId,
-                });
-                const response = await connect.send(listCommand);
+                })) {
+                    lambdas.push(...page.LambdaFunctions!);
+                }
 
-                const existsAlready = response.LambdaFunctions!.some(
+                const existsAlready = lambdas.some(
                     (arn) => arn === props.functionArn
                 );
 
@@ -62,12 +64,14 @@ export class ConnectLambdaFunctionAssociation extends ConnectCustomResource {
 
             case "Delete": {
 
-                const listCommand = new ListLambdaFunctionsCommand({
+                const lambdas: string[] = [];
+                for await (const page of paginateListLambdaFunctions({client: connect}, {
                     InstanceId: props.connectInstanceId,
-                });
-                const response = await connect.send(listCommand);
+                })) {
+                    lambdas.push(...page.LambdaFunctions!);
+                }
 
-                const exists = response.LambdaFunctions!.some(
+                const exists = lambdas.some(
                     (arn) => arn === props.functionArn
                 );
 

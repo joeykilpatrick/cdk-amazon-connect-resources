@@ -2,7 +2,6 @@ import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResp
 import crypto from "crypto";
 import {
     ConnectClient,
-    DescribePhoneNumberCommand,
     AssociatePhoneNumberContactFlowCommand,
     DisassociatePhoneNumberContactFlowCommand,
 } from "@aws-sdk/client-connect";
@@ -33,17 +32,12 @@ export class ConnectPhoneNumberContactFlowAssociation extends ConnectCustomResou
             case "Create":
             case "Update": {
 
-                // TODO This command isn't right, TargetArn is the instance, not the flow
-                // const describeCommand = new DescribePhoneNumberCommand({
-                //     PhoneNumberId: props.phoneNumberId,
-                // });
-                // const response = await connect.send(describeCommand);
-                //
-                // const existingTarget = response.ClaimedPhoneNumberSummary!.TargetArn;
-                //
-                // if (existingTarget) {
-                //     throw Error(`Phone number ${props.phoneNumberId} already has a target: "${existingTarget}"`);
-                // }
+                /*  TODO
+                    This should check that there isn't another phone number
+                    already associated before associating. As of 2022-12-12
+                    there is no API to get the current contact flow association
+                    of a phone number.
+                 */
 
                 const command = new AssociatePhoneNumberContactFlowCommand({
                     InstanceId: props.connectInstanceId,
@@ -63,20 +57,12 @@ export class ConnectPhoneNumberContactFlowAssociation extends ConnectCustomResou
 
             case "Delete": {
 
-                // TODO This command isn't right, TargetArn is the instance, not the flow
-                // const describeCommand = new DescribePhoneNumberCommand({
-                //     PhoneNumberId: props.phoneNumberId,
-                // });
-                // const response = await connect.send(describeCommand);
-                //
-                // const existingTarget = response.ClaimedPhoneNumberSummary!.;
-                //
-                // if (!existingTarget || !existingTarget.includes(props.contactFlowId)) {
-                //     return {
-                //         ...event,
-                //         Status: "SUCCESS",
-                //     };
-                // }
+                /*  TODO
+                    This should check that this phone number is the one
+                    associated before disassociating. As of 2022-12-12
+                    there is no API to get the current contact flow association
+                    of a phone number.
+                 */
 
                 const command = new DisassociatePhoneNumberContactFlowCommand({
                     InstanceId: props.connectInstanceId,

@@ -1,11 +1,13 @@
 import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResponse} from "aws-lambda";
 import crypto from "crypto";
 import {
-    ConnectClient,
     AssociateBotCommand,
+    ConnectClient,
     DisassociateBotCommand,
+    LexBotConfig,
     LexVersion,
     ListBotsCommand,
+    paginateListBots,
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
@@ -33,13 +35,15 @@ export class ConnectLexBotAssociation extends ConnectCustomResource {
             case "Create":
             case "Update": {
 
-                const listCommand = new ListBotsCommand({ // TODO Multiple pages
+                const bots: LexBotConfig[] = [];
+                for await (const page of paginateListBots({client: connect}, {
                     InstanceId: props.connectInstanceId,
                     LexVersion: LexVersion.V2,
-                });
-                const response = await connect.send(listCommand);
+                })) {
+                    bots.push(...page.LexBots!);
+                }
 
-                const existsAlready = response.LexBots!.some(
+                const existsAlready = bots.some(
                     (config) => config.LexV2Bot?.AliasArn === props.lexBotAliasArn
                 );
 

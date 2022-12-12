@@ -5,7 +5,7 @@ import {
     ConnectClient,
     CreateRoutingProfileCommand,
     CreateRoutingProfileRequest,
-    ListRoutingProfilesCommand,
+    paginateListRoutingProfiles,
     RoutingProfileSummary,
     UpdateRoutingProfileConcurrencyCommand,
     UpdateRoutingProfileDefaultOutboundQueueCommand,
@@ -142,12 +142,12 @@ export class ConnectRoutingProfile extends ConnectCustomResource {
 
     static async getRoutingProfile(instanceId: string, profileName: string): Promise<RoutingProfileSummary | undefined> {
 
-        const listCommand = new ListRoutingProfilesCommand({ // TODO Multiple pages
-            InstanceId: instanceId,
-        });
-        const listCommandResponse = await connect.send(listCommand);
+        const routingProfiles: RoutingProfileSummary[] = [];
+        for await (const page of paginateListRoutingProfiles({client: connect}, {InstanceId: instanceId})) {
+            routingProfiles.push(...page.RoutingProfileSummaryList!);
+        }
 
-        return listCommandResponse.RoutingProfileSummaryList!.find(
+        return routingProfiles.find(
             (summary) => summary.Name === profileName,
         );
 

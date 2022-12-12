@@ -1,7 +1,8 @@
 import type {CloudFormationCustomResourceEvent, CloudFormationCustomResourceResponse} from "aws-lambda";
 import {
     ConnectClient,
-    ListPromptsCommand,
+    paginateListPrompts,
+    PromptSummary,
 } from "@aws-sdk/client-connect";
 import {Construct} from 'constructs';
 
@@ -41,12 +42,14 @@ export class ConnectExistingPrompt extends ConnectCustomResource {
             case "Create":
             case "Update": {
 
-                const listCommand = new ListPromptsCommand({ // TODO Multiple pages
+                const prompts: PromptSummary[] = [];
+                for await (const page of paginateListPrompts({client: connect}, {
                     InstanceId: props.connectInstanceId,
-                });
-                const response = await connect.send(listCommand);
+                })) {
+                    prompts.push(...page.PromptSummaryList!);
+                }
 
-                const prompt = response.PromptSummaryList!.find(
+                const prompt = prompts.find(
                     (prompt) => prompt.Name === props.promptName
                 );
 
