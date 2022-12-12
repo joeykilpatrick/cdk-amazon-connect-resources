@@ -33,5 +33,14 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: |
+          echo Local version is: $(npm pkg get version)
+          echo Published version is:  "\"$( npm view cdk-amazon-connect-resources version )\""
+          
+          if [[ $( npm pkg get version ) != "\"$( npm view cdk-amazon-connect-resources version )\"" ]]
+          then
+            echo Publishing
+            npm publish
+          else
+            echo Not Publishing
+          fi
