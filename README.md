@@ -1,5 +1,4 @@
 # Amazon Connect Resources for AWS CDK
----
 
 ![Experimental](https://img.shields.io/badge/experimental-important.svg?style=for-the-badge)
 [![npm](https://img.shields.io/npm/v/cdk-amazon-connect-resources)](https://www.npmjs.com/package/cdk-amazon-connect-resources)
@@ -16,11 +15,11 @@ npm i cdk-amazon-connect-resources
 ## Constructs
 Custom CDK resources:
 - `ConnectExistingPrompt`
-- `ConnectLambdaFunctionAssociation`
-- `ConnectLexBotAssociation`
+- ~~`ConnectLambdaFunctionAssociation`~~ (Use `AWS::Connect::IntegrationAssociation`, added Feb. 2023)
+- ~~`ConnectLexBotAssociation`~~ (Use `AWS::Connect::IntegrationAssociation`, added Feb. 2023)
 - `ConnectPhoneNumberContactFlowAssociation`
-- `ConnectQueue`
-- `ConnectRoutingProfile`
+- ~~`ConnectQueue`~~ (Use `AWS::Connect::Queue`, added July 2023)
+- ~~`ConnectRoutingProfile`~~ (Use `AWS::Connect::RoutingProfile`, added July 2023)
 - `ConnectSecurityProfile`
 
 Higher-level CDK constructs:
