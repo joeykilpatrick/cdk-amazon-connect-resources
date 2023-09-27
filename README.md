@@ -20,7 +20,7 @@ Custom CDK resources:
 - `ConnectPhoneNumberContactFlowAssociation`
 - ~~`ConnectQueue`~~ (Use `AWS::Connect::Queue`, added July 2023)
 - ~~`ConnectRoutingProfile`~~ (Use `AWS::Connect::RoutingProfile`, added July 2023)
-- `ConnectSecurityProfile`
+- ~`ConnectSecurityProfile`~ (Use `AWS::Connect::SecurityProfile`, added Sep. 2023)
 
 Higher-level CDK constructs:
 - `ConnectFlowPhoneNumber`
