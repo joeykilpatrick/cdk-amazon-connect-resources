@@ -1,5 +1,5 @@
 import * as path from "path";
-import * as CDK from 'aws-cdk-lib';
+import * as CDK from 'aws-cdk-lib/core';
 import * as IAM from 'aws-cdk-lib/aws-iam';
 import * as Lambda from 'aws-cdk-lib/aws-lambda';
 import * as NodeJSLambda from 'aws-cdk-lib/aws-lambda-nodejs';
