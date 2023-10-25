@@ -1,3 +1,4 @@
+export * from './ConnectAgentStatus';
 export * from './ConnectExistingPrompt';
 export * from './ConnectFlowPhoneNumber';
 export * from './ConnectLambdaFunction';

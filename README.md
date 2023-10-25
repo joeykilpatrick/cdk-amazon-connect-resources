@@ -14,10 +14,11 @@ npm i cdk-amazon-connect-resources
 
 ## Constructs
 Level 1 Constructs:
+- `ConnectAgentStatus`
+- `ConnectExistingPrompt`
 - `ConnectPhoneNumberContactFlowAssociation`
 
 Level 2 constructs:
-- `ConnectExistingPrompt`
 - `ConnectFlowPhoneNumber`
 - `ConnectLambdaFunction`
 

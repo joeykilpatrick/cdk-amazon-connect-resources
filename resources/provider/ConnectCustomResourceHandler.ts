@@ -5,6 +5,7 @@ import type {
 
 import {ResourceType} from ".";
 import {
+    ConnectAgentStatus,
     ConnectExistingPrompt,
     ConnectPhoneNumberContactFlowAssociation,
 } from "..";
@@ -25,6 +26,7 @@ export async function handler(event: CloudFormationCustomResourceEvent): Promise
     type Handler = (event: CloudFormationCustomResourceEvent) => Promise<CloudFormationCustomResourceResponse>;
 
     const handlers: Record<ResourceType, Handler> = {
+        [ResourceType.AGENT_STATUS]: ConnectAgentStatus.handleCloudFormationEvent,
         [ResourceType.EXISTING_PROMPT]: ConnectExistingPrompt.handleCloudFormationEvent,
         [ResourceType.PHONE_NUMBER_CONTACT_FLOW_ASSOCIATION]: ConnectPhoneNumberContactFlowAssociation.handleCloudFormationEvent,
     };
