@@ -13,15 +13,17 @@ npm i cdk-amazon-connect-resources
 ```
 
 ## Constructs
-Custom CDK resources:
-- `ConnectExistingPrompt`
-- ~~`ConnectLambdaFunctionAssociation`~~ (Use `AWS::Connect::IntegrationAssociation`, added Feb. 2023)
-- ~~`ConnectLexBotAssociation`~~ (Use `AWS::Connect::IntegrationAssociation`, added Feb. 2023)
+Level 1 Constructs:
 - `ConnectPhoneNumberContactFlowAssociation`
-- ~~`ConnectQueue`~~ (Use `AWS::Connect::Queue`, added July 2023)
-- ~~`ConnectRoutingProfile`~~ (Use `AWS::Connect::RoutingProfile`, added July 2023)
-- ~`ConnectSecurityProfile`~ (Use `AWS::Connect::SecurityProfile`, added Sep. 2023)
 
-Higher-level CDK constructs:
+Level 2 constructs:
+- `ConnectExistingPrompt`
 - `ConnectFlowPhoneNumber`
 - `ConnectLambdaFunction`
+
+Deprecated constructs:
+- `ConnectLambdaFunctionAssociation` (Use `AWS::Connect::IntegrationAssociation`, added Feb. 2023)
+- `ConnectLexBotAssociation` (Use `AWS::Connect::IntegrationAssociation`, added Feb. 2023)
+- `ConnectQueue` (Use `AWS::Connect::Queue`, added July 2023)
+- `ConnectRoutingProfile` (Use `AWS::Connect::RoutingProfile`, added July 2023)
+- `ConnectSecurityProfile` (Use `AWS::Connect::SecurityProfile`, added Sep. 2023)

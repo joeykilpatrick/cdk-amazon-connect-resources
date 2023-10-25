@@ -19,9 +19,9 @@
         "@types/aws-lambda": "^8.10.109",
         "@types/lodash": "^4.14.191",
         "@types/node": "^18.11.9",
-        "aws-cdk": "^2.52.0",
-        "aws-cdk-lib": "^2.52.0",
-        "constructs": "^10.1.173",
+        "aws-cdk": "^2.102.0",
+        "aws-cdk-lib": "^2.102.0",
+        "constructs": "^10.3.0",
         "esbuild": "^0.15.16",
         "lodash": "^4.17.21"
     }

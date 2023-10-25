@@ -7,11 +7,6 @@ import {ResourceType} from ".";
 import {
     ConnectExistingPrompt,
     ConnectPhoneNumberContactFlowAssociation,
-    ConnectLexBotAssociation,
-    ConnectLambdaFunctionAssociation,
-    ConnectQueue,
-    ConnectRoutingProfile,
-    ConnectSecurityProfile,
 } from "..";
 
 export async function handler(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
@@ -31,12 +26,7 @@ export async function handler(event: CloudFormationCustomResourceEvent): Promise
 
     const handlers: Record<ResourceType, Handler> = {
         [ResourceType.EXISTING_PROMPT]: ConnectExistingPrompt.handleCloudFormationEvent,
-        [ResourceType.LAMBDA_FUNCTION_ASSOCIATION]: ConnectLambdaFunctionAssociation.handleCloudFormationEvent,
-        [ResourceType.LEX_BOT_ASSOCIATION]: ConnectLexBotAssociation.handleCloudFormationEvent,
         [ResourceType.PHONE_NUMBER_CONTACT_FLOW_ASSOCIATION]: ConnectPhoneNumberContactFlowAssociation.handleCloudFormationEvent,
-        [ResourceType.QUEUE]: ConnectQueue.handleCloudFormationEvent,
-        [ResourceType.ROUTING_PROFILE]: ConnectRoutingProfile.handleCloudFormationEvent,
-        [ResourceType.SECURITY_PROFILE]: ConnectSecurityProfile.handleCloudFormationEvent,
     };
 
     return await handlers[resourceType](event);
