@@ -43,11 +43,14 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
         lambda.addToRolePolicy(new IAM.PolicyStatement({
             actions: [
                 "connect:Associate*",
+                "connect:Describe*",
                 "connect:Disassociate*",
                 "connect:List*",
                 "connect:*Queue*",
                 "connect:*SecurityProfile*",
                 "connect:*RoutingProfile*",
+
+                "ds:DescribeDirectories",
 
                 "iam:*RolePolicy",
                 "iam:CreateServiceLinkedRole",
