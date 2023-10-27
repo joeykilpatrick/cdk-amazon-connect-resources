@@ -2,6 +2,8 @@ import * as Lambda from 'aws-cdk-lib/aws-lambda';
 import * as Connect from 'aws-cdk-lib/aws-connect';
 import {Construct} from 'constructs';
 
+import {ConnectLambdaFunctionAssociation} from ".";
+
 
 export class ConnectLambdaFunction extends Lambda.Function {
 
@@ -13,10 +15,18 @@ export class ConnectLambdaFunction extends Lambda.Function {
         super(scope, id, props);
     }
 
-    public readonly connectInstanceAssociation = new Connect.CfnIntegrationAssociation(this, 'functionAssociation', {
-        integrationType: "LAMBDA_FUNCTION",
-        integrationArn: this.functionArn,
-        instanceId: this.props.connectInstance.attrId,
+    // Using custom association resource over built-in because the
+    // built-in errors on UPDATE even if no properties have changed
+
+    public readonly connectInstanceAssociation  = new ConnectLambdaFunctionAssociation(this, 'functionAssociation', {
+        connectInstanceId: this.props.connectInstance.ref,
+        functionArn: this.functionArn,
     });
+
+    // public readonly connectInstanceAssociation = new Connect.CfnIntegrationAssociation(this, 'functionAssociation', {
+    //     integrationType: "LAMBDA_FUNCTION",
+    //     integrationArn: this.functionArn,
+    //     instanceId: this.props.connectInstance.attrArn, // Despite the fact that this says Id, it's actually Arn
+    // });
 
 }

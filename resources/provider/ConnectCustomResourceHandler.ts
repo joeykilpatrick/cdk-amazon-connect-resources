@@ -9,6 +9,7 @@ import {
     ConnectExistingInstance,
     ConnectExistingPrompt,
     ConnectExistingPhoneNumber,
+    ConnectLambdaFunctionAssociation,
     ConnectPhoneNumberContactFlowAssociation,
 } from "..";
 
@@ -32,6 +33,7 @@ export async function handler(event: CloudFormationCustomResourceEvent): Promise
         [ResourceType.EXISTING_INSTANCE]: ConnectExistingInstance.handleCloudFormationEvent,
         [ResourceType.EXISTING_PROMPT]: ConnectExistingPrompt.handleCloudFormationEvent,
         [ResourceType.EXISTING_PHONE_NUMBER]: ConnectExistingPhoneNumber.handleCloudFormationEvent,
+        [ResourceType.LAMBDA_FUNCTION_ASSOCIATION]: ConnectLambdaFunctionAssociation.handleCloudFormationEvent,
         [ResourceType.PHONE_NUMBER_CONTACT_FLOW_ASSOCIATION]: ConnectPhoneNumberContactFlowAssociation.handleCloudFormationEvent,
     };
 
