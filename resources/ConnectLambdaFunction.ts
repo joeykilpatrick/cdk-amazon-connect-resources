@@ -1,5 +1,4 @@
 import * as Lambda from 'aws-cdk-lib/aws-lambda';
-import * as Connect from 'aws-cdk-lib/aws-connect';
 import {Construct} from 'constructs';
 
 import {ConnectLambdaFunctionAssociation} from ".";
@@ -10,7 +9,7 @@ export class ConnectLambdaFunction extends Lambda.Function {
     constructor(
         scope: Construct,
         id: string,
-        private props: Lambda.FunctionProps & { connectInstance: Connect.CfnInstance },
+        private props: Lambda.FunctionProps & { connectInstanceId: string },
     ) {
         super(scope, id, props);
     }
@@ -19,7 +18,7 @@ export class ConnectLambdaFunction extends Lambda.Function {
     // built-in errors on UPDATE even if no properties have changed
 
     public readonly connectInstanceAssociation  = new ConnectLambdaFunctionAssociation(this, 'functionAssociation', {
-        connectInstanceId: this.props.connectInstance.ref,
+        connectInstanceId: this.props.connectInstanceId,
         functionArn: this.functionArn,
     });
 
