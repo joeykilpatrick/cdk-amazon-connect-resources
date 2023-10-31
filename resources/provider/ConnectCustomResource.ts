@@ -49,6 +49,7 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "connect:*Queue*",
                 "connect:*SecurityProfile*",
                 "connect:*RoutingProfile*",
+                "connect:*AgentStatus*",
 
                 "ds:DescribeDirectories",
 
