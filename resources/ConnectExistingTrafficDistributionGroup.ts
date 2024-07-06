@@ -17,7 +17,7 @@ export interface ExistingTrafficDistributionGroupProps {
 export class ConnectExistingTrafficDistributionGroup extends ConnectCustomResource {
 
     public constructor(scope: Construct, id: string, props: ExistingTrafficDistributionGroupProps) {
-        super(scope, id, props, ResourceType.EXISTING_INSTANCE);
+        super(scope, id, props, ResourceType.EXISTING_TRAFFIC_DISTRIBUTION_GROUP);
     }
 
     get attrArn(): string {
