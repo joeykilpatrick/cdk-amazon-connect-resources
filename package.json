@@ -18,11 +18,14 @@
         "@aws-sdk/client-connect": "^3.782.0",
         "@types/aws-lambda": "^8.10.109",
         "@types/lodash": "^4.14.191",
-        "@types/node": "^18.11.9",
+        "@types/node": "^22.14.0",
         "aws-cdk": "^2.102.0",
         "aws-cdk-lib": "^2.102.0",
         "constructs": "^10.3.0",
         "esbuild": "^0.15.16",
         "lodash": "^4.17.21"
+    },
+    "devDependencies": {
+        "typescript": "^5.8.3"
     }
 }
