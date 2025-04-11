@@ -7,4 +7,7 @@ export enum ResourceType {
     EXISTING_TRAFFIC_DISTRIBUTION_GROUP = "ConnectExistingTrafficDistributionGroup",
     LAMBDA_FUNCTION_ASSOCIATION = "ConnectLambdaFunctionAssociation",
     PHONE_NUMBER_CONTACT_FLOW_ASSOCIATION = "ConnectPhoneNumberContactFlowAssociation",
+    WISDOM_ASSISTANT_ASSOCIATION = "ConnectWisdomAssistantAssociation",
+    WISDOM_KNOWLEDGE_BASE_ASSOCIATION = "ConnectWisdomKnowledgeBaseAssociation",
+    WISDOM_QUICK_RESPONSES_ASSOCIATION = "ConnectWisdomQuickResponsesAssociation",
 }

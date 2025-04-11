@@ -13,6 +13,9 @@ import {
     ConnectExistingTrafficDistributionGroup,
     ConnectLambdaFunctionAssociation,
     ConnectPhoneNumberContactFlowAssociation,
+    ConnectWisdomAssistantAssociation,
+    ConnectWisdomKnowledgeBaseAssociation,
+    ConnectWisdomQuickResponsesAssociation,
 } from "..";
 
 export async function handler(event: CloudFormationCustomResourceEvent): Promise<CloudFormationCustomResourceResponse> {
@@ -39,6 +42,9 @@ export async function handler(event: CloudFormationCustomResourceEvent): Promise
         [ResourceType.EXISTING_TRAFFIC_DISTRIBUTION_GROUP]: ConnectExistingTrafficDistributionGroup.handleCloudFormationEvent,
         [ResourceType.LAMBDA_FUNCTION_ASSOCIATION]: ConnectLambdaFunctionAssociation.handleCloudFormationEvent,
         [ResourceType.PHONE_NUMBER_CONTACT_FLOW_ASSOCIATION]: ConnectPhoneNumberContactFlowAssociation.handleCloudFormationEvent,
+        [ResourceType.WISDOM_ASSISTANT_ASSOCIATION]: ConnectWisdomAssistantAssociation.handleCloudFormationEvent,
+        [ResourceType.WISDOM_KNOWLEDGE_BASE_ASSOCIATION]: ConnectWisdomKnowledgeBaseAssociation.handleCloudFormationEvent,
+        [ResourceType.WISDOM_QUICK_RESPONSES_ASSOCIATION]: ConnectWisdomQuickResponsesAssociation.handleCloudFormationEvent,
     };
 
     return await handlers[resourceType](event);

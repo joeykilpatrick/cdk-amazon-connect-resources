@@ -52,6 +52,11 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "connect:*AgentStatus*",
                 "connect:*TrafficDistributionGroup*",
                 "connect:*InstanceAttribute*",
+                "connect:*IntegrationAssociation*",
+
+                "wisdom:GetAssistant",
+                "wisdom:GetKnowledgeBase",
+                "wisdom:TagResource",
 
                 "ds:DescribeDirectories",
 
