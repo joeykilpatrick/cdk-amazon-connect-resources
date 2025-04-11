@@ -1,5 +1,6 @@
 export enum ResourceType {
     AGENT_STATUS = "ConnectAgentStatus",
+    ENABLED_INSTANCE_ATTRIBUTE = "ConnectEnabledInstanceAttribute",
     EXISTING_INSTANCE = "ConnectExistingInstance",
     EXISTING_PHONE_NUMBER = "ConnectExistingPhoneNumber",
     EXISTING_PROMPT = "ConnectExistingPrompt",

@@ -6,6 +6,7 @@ import type {
 import {ResourceType} from ".";
 import {
     ConnectAgentStatus,
+    ConnectEnabledInstanceAttribute,
     ConnectExistingInstance,
     ConnectExistingPrompt,
     ConnectExistingPhoneNumber,
@@ -31,6 +32,7 @@ export async function handler(event: CloudFormationCustomResourceEvent): Promise
 
     const handlers: Record<ResourceType, Handler> = {
         [ResourceType.AGENT_STATUS]: ConnectAgentStatus.handleCloudFormationEvent,
+        [ResourceType.ENABLED_INSTANCE_ATTRIBUTE]: ConnectEnabledInstanceAttribute.handleCloudFormationEvent,
         [ResourceType.EXISTING_INSTANCE]: ConnectExistingInstance.handleCloudFormationEvent,
         [ResourceType.EXISTING_PROMPT]: ConnectExistingPrompt.handleCloudFormationEvent,
         [ResourceType.EXISTING_PHONE_NUMBER]: ConnectExistingPhoneNumber.handleCloudFormationEvent,

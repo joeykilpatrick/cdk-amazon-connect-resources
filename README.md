@@ -15,6 +15,7 @@ npm i cdk-amazon-connect-resources
 ## Constructs
 Level 1 Constructs:
 - `ConnectAgentStatus`
+- `ConnectEnabledInstanceAttribute`
 - `ConnectExistingInstance`
 - `ConnectExistingPhoneNumber`
 - `ConnectExistingPrompt`

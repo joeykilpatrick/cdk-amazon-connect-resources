@@ -51,6 +51,7 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "connect:*RoutingProfile*",
                 "connect:*AgentStatus*",
                 "connect:*TrafficDistributionGroup*",
+                "connect:*InstanceAttribute*",
 
                 "ds:DescribeDirectories",
 
@@ -62,6 +63,8 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "lex:*ResourcePolicy",
                 "lex:DescribeBotAlias",
                 "lex:GetBot",
+
+                "logs:CreateLogGroup",
             ],
             resources: ["*"],
         }));
