@@ -16,7 +16,7 @@ const connect = new ConnectClient({});
 
 export interface WisdomQuickResponsesAssociationProps {
     readonly connectInstanceId: string;
-    readonly wisdomQuickResponsesArn: string;
+    readonly wisdomKnowledgeBaseArn: string;
 }
 
 export class ConnectWisdomQuickResponsesAssociation extends ConnectCustomResource {
@@ -44,17 +44,17 @@ export class ConnectWisdomQuickResponsesAssociation extends ConnectCustomResourc
                 }
 
                 const existsAlready = integrationAssociations.some(
-                    (association) => association.IntegrationType === integrationType && association.IntegrationArn === props.wisdomQuickResponsesArn
+                    (association) => association.IntegrationType === integrationType && association.IntegrationArn === props.wisdomKnowledgeBaseArn
                 );
 
                 if (existsAlready) {
-                    throw Error(`Wisdom Quick Responses ${props.wisdomQuickResponsesArn} is already associated to Connect instance ${props.connectInstanceId}.`);
+                    throw Error(`Wisdom Quick Responses for Knowledge Base ${props.wisdomKnowledgeBaseArn} are already associated to Connect instance ${props.connectInstanceId}.`);
                 }
 
                 const associateCommand = new CreateIntegrationAssociationCommand({
                     InstanceId: props.connectInstanceId,
                     IntegrationType: integrationType,
-                    IntegrationArn: props.wisdomQuickResponsesArn,
+                    IntegrationArn: props.wisdomKnowledgeBaseArn,
                 });
                 await connect.send(associateCommand);
 
@@ -77,7 +77,7 @@ export class ConnectWisdomQuickResponsesAssociation extends ConnectCustomResourc
                 }
 
                 const existingAssociation = integrationAssociations.find(
-                    (association) => association.IntegrationType === integrationType && association.IntegrationArn === props.wisdomQuickResponsesArn
+                    (association) => association.IntegrationType === integrationType && association.IntegrationArn === props.wisdomKnowledgeBaseArn
                 );
 
                 if (!existingAssociation) {
