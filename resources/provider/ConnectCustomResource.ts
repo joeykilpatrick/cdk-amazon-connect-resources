@@ -58,6 +58,9 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "wisdom:GetKnowledgeBase",
                 "wisdom:TagResource",
 
+                "kms:CreateGrant",
+                "kms:DescribeKey",
+
                 "ds:DescribeDirectories",
 
                 "iam:*RolePolicy",
