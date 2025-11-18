@@ -8,6 +8,7 @@ export * from './ConnectEnabledInstanceAttribute';
 export * from './ConnectLambdaFunction';
 export * from './ConnectLambdaFunctionAssociation';
 export * from './ConnectPhoneNumberContactFlowAssociation';
+export * from './ConnectSesIdentityAssociation';
 export * from './ConnectWisdomAssistantAssociation';
 export * from './ConnectWisdomKnowledgeBaseAssociation';
 export * from './ConnectWisdomQuickResponsesAssociation';

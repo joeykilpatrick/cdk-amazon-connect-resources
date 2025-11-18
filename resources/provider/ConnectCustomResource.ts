@@ -72,6 +72,10 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "lex:DescribeBotAlias",
                 "lex:GetBot",
 
+                "ses:Get*",
+                "ses:Describe*",
+                "ses:List*",
+
                 "logs:CreateLogGroup",
             ],
             resources: ["*"],
