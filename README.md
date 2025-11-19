@@ -21,6 +21,7 @@ Level 1 Constructs:
 - `ConnectExistingPrompt`
 - `ConnectExistingTrafficDistributionGroup`
 - `ConnectPhoneNumberContactFlowAssociation`
+- `ConnectSesIdentityAssociation`
 - `ConnectWisdomAssistantAssociation`
 - `ConnectWisdomKnowledgeBaseAssociation`
 - `ConnectWisdomQuickResponsesAssociation`
