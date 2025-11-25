@@ -75,10 +75,22 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "ses:Get*",
                 "ses:Describe*",
                 "ses:List*",
+                "ses:*Receipt*",
+                "ses:*ConfigurationSet*",
+                "ses:*EmailIdentityPolicy*",
 
                 "logs:CreateLogGroup",
             ],
             resources: ["*"],
+        }));
+
+        lambda.addToRolePolicy(new IAM.PolicyStatement({
+            actions: [
+                "iam:PassRole",
+            ],
+            resources: [
+                'arn:aws:iam::*:role/service-role/AmazonConnect*',
+            ],
         }));
 
         const newProvider = new CustomResource.Provider(stack, `ConnectCustomResourceProvider`, {
