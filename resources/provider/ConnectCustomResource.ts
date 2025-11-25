@@ -54,6 +54,14 @@ export abstract class ConnectCustomResource extends CDK.CustomResource {
                 "connect:*InstanceAttribute*",
                 "connect:*IntegrationAssociation*",
 
+                "s3:List*",
+                "s3:GetBucketAcl",
+                "s3:GetBucketLocation",
+
+                "firehose:DescribeDeliveryStream",
+
+                "kinesis:DescribeStream",
+
                 "wisdom:GetAssistant",
                 "wisdom:GetKnowledgeBase",
                 "wisdom:TagResource",
