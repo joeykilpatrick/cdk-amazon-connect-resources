@@ -37,3 +37,6 @@ tsconfig.tsbuildinfo
 # System Files
 .DS_Store
 Thumbs.db
+
+# Local testing
+test
