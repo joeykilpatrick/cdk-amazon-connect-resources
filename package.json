@@ -16,16 +16,13 @@
     "homepage": "https://github.com/joeykilpatrick/cdk-amazon-connect-resources#readme",
     "dependencies": {
         "@aws-sdk/client-connect": "^3.782.0",
-        "@types/aws-lambda": "^8.10.109",
-        "@types/lodash": "^4.14.191",
-        "@types/node": "^22.14.0",
-        "aws-cdk": "^2.102.0",
-        "aws-cdk-lib": "^2.102.0",
-        "constructs": "^10.3.0",
-        "esbuild": "^0.15.16",
-        "lodash": "^4.17.21"
+        "aws-cdk-lib": "^2.229.1",
+        "constructs": "^10.4.3",
+        "esbuild": "^0.15.16"
     },
     "devDependencies": {
+        "@types/aws-lambda": "^8.10.109",
+        "@types/node": "^24.10.1",
         "typescript": "^5.8.3"
     }
 }
