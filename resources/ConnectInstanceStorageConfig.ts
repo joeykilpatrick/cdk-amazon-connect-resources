@@ -72,9 +72,7 @@ export class ConnectInstanceStorageConfig extends ConnectCustomResource {
                     configs.push(...page.StorageConfigs!);
                 }
 
-                const exists = configs.find(
-                    (config) => config.StorageType === props.ResourceType
-                );
+                const exists = configs[0]; // Is there ever a time when there might be more than one?
 
                 if (!exists) {
                     return {
