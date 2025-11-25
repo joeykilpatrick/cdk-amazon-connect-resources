@@ -20,6 +20,7 @@ Level 1 Constructs:
 - `ConnectExistingPhoneNumber`
 - `ConnectExistingPrompt`
 - `ConnectExistingTrafficDistributionGroup`
+- `ConnectFlowAssociation`
 - `ConnectPhoneNumberContactFlowAssociation`
 - `ConnectSesIdentityAssociation`
 - `ConnectWisdomAssistantAssociation`

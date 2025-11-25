@@ -3,6 +3,7 @@ export * from './ConnectExistingInstance';
 export * from './ConnectExistingPhoneNumber';
 export * from './ConnectExistingPrompt';
 export * from './ConnectExistingTrafficDistributionGroup';
+export * from './ConnectFlowAssociation';
 export * from './ConnectFlowPhoneNumber';
 export * from './ConnectEnabledInstanceAttribute';
 export * from './ConnectLambdaFunction';

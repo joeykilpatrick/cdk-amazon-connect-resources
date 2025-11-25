@@ -5,6 +5,7 @@ export enum ResourceType {
     EXISTING_PHONE_NUMBER = "ConnectExistingPhoneNumber",
     EXISTING_PROMPT = "ConnectExistingPrompt",
     EXISTING_TRAFFIC_DISTRIBUTION_GROUP = "ConnectExistingTrafficDistributionGroup",
+    FLOW_ASSOCIATION = "FLOW_ASSOCIATION",
     LAMBDA_FUNCTION_ASSOCIATION = "ConnectLambdaFunctionAssociation",
     PHONE_NUMBER_CONTACT_FLOW_ASSOCIATION = "ConnectPhoneNumberContactFlowAssociation",
     SES_IDENTITY_ASSOCIATION = "ConnectSesIdentityAssociation",
